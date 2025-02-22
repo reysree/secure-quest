@@ -8,6 +8,6 @@ export const generateStaticParams = () => {
   ];
 };
 
-export default function GamePage({ params }) {
-  return <GameClient difficulty={params.difficulty} />;
+export default async function GamePage({ params: { difficulty } }) {
+  return <GameClient difficulty={difficulty} />;
 }

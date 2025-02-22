@@ -8,10 +8,12 @@ export const generateStaticParams = () => {
   ];
 };
 
-export default function GamePage({ params }) {
+export default async function Page({ params }) {
+  const resolvedParams = await Promise.resolve(params);
+  const { difficulty } = resolvedParams;
   return (
     <div style={{ height: "100vh", width: "100vw" }}>
-      <MysteryRoom difficulty={params.difficulty} />
+      <MysteryRoom difficulty={difficulty} />
     </div>
   );
 }
