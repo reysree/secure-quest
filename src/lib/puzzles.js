@@ -74,6 +74,142 @@ export const puzzles = {
         ],
       },
     },
+    {
+      id: "consent-management",
+      title: "Consent Form Optimization",
+      description:
+        "For this registration, only your Full Name and Email Address are required. Please disable any additional data fields.",
+      type: "consent",
+      difficulty: "easy",
+      points: 200,
+      data: {
+        fields: [
+          { id: "1", label: "Full Name", required: true },
+          { id: "2", label: "Email Address", required: true },
+          { id: "3", label: "Phone Number", required: false },
+          { id: "4", label: "Home Address", required: false },
+          { id: "5", label: "Social Security Number", required: false },
+          { id: "6", label: "Date of Birth", required: false },
+        ],
+      },
+    },
+    {
+      id: "risk-mitigation",
+      title: "Risk Identification & Mitigation",
+      description:
+        "Drag the appropriate mitigation measure onto each risk scenario.",
+      type: "risk-mitigation",
+      difficulty: "easy",
+      points: 250,
+      data: {
+        scenarios: [
+          {
+            id: "1",
+            description:
+              "An employee sends confidential emails containing customer credit card numbers.",
+            correctMitigation: "encryption",
+          },
+          {
+            id: "2",
+            description:
+              "A website collects extensive personal data beyond what's necessary for the service.",
+            correctMitigation: "data-minimization",
+          },
+          {
+            id: "3",
+            description:
+              "User access logs reveal multiple failed login attempts from unusual locations.",
+            correctMitigation: "access-control",
+          },
+        ],
+        mitigations: [
+          {
+            id: "encryption",
+            text: "Encrypt sensitive data in transit and at rest",
+          },
+          {
+            id: "data-minimization",
+            text: "Collect only the minimum data required",
+          },
+          {
+            id: "access-control",
+            text: "Implement strong access controls and 2FA",
+          },
+          {
+            id: "employee-training",
+            text: "Conduct regular security training",
+          },
+          {
+            id: "audit-monitoring",
+            text: "Monitor logs for unusual activities",
+          },
+        ],
+      },
+    },
+    {
+      id: "privacy-memory",
+      title: "Privacy Memory Challenge",
+      description: "Match each data privacy term with its correct definition.",
+      type: "memory",
+      difficulty: "easy",
+      points: 200,
+      data: {
+        pairs: [
+          {
+            id: "1",
+            term: "Data Minimization",
+            definition: "Collect only the minimum necessary data.",
+          },
+          {
+            id: "2",
+            term: "Informed Consent",
+            definition: "Obtain explicit permission for data processing.",
+          },
+          {
+            id: "3",
+            term: "Encryption",
+            definition: "Protect data by converting it into a secure code.",
+          },
+          {
+            id: "4",
+            term: "Access Control",
+            definition: "Restrict data access to authorized users.",
+          },
+        ],
+      },
+    },
+    {
+      id: "privacy-memory",
+      title: "Privacy Memory Challenge",
+      description: "Match each data privacy term with its correct definition.",
+      type: "memory",
+      difficulty: "easy",
+      points: 200,
+      data: {
+        pairs: [
+          {
+            id: "1",
+            term: "Data Minimization",
+            definition: "Collect only the minimum necessary data.",
+          },
+          {
+            id: "2",
+            term: "Informed Consent",
+            definition: "Obtain explicit permission for data processing.",
+          },
+          {
+            id: "3",
+            term: "Encryption",
+            definition: "Protect data by converting it into a secure code.",
+          },
+          {
+            id: "4",
+            term: "Access Control",
+            definition: "Restrict data access to authorized users.",
+          },
+        ],
+      },
+    },
   ],
   medium: [
     {
