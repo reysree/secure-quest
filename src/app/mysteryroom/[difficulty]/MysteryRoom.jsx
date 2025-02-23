@@ -41,6 +41,7 @@ import XeroxMachine from "@/components/XeroxMachine";
 import Table from "@/components/Table";
 import CeilingFan from "@/components/CeilingFan";
 import Clock from "@/components/Clock";
+import Chat from "@/components/Chat";
 
 // The Room component creates the static 3D environment
 function Room({ isBright }) {
@@ -265,7 +266,7 @@ export default function MysteryRoom({ difficulty }) {
             />
             <Safe
               onClick={() => handleObjectClick(2)}
-              position={[8, -1.6, -9.95]}
+              position={[8, -1.7, -9.9]}
             />
             <LightSwitch
               onClick={toggleBrightness}
@@ -358,6 +359,7 @@ export default function MysteryRoom({ difficulty }) {
           </Dialog>
         </div>
       )}
+      <Chat></Chat>
     </div>
   );
 }
