@@ -21,6 +21,7 @@ export function SortingPuzzle({ data, onComplete }) {
     e.preventDefault();
     const id = e.dataTransfer.getData("text/plain");
     const item = remainingItems.find((item) => item.id === id);
+    console.log("The items in the categroized items are : ", categorizedItems);
 
     if (item) {
       setCategorizedItems((prev) => ({
@@ -29,6 +30,14 @@ export function SortingPuzzle({ data, onComplete }) {
       }));
       setRemainingItems((prev) => prev.filter((i) => i.id !== id));
     }
+  };
+
+  const onHandleReset = () => {
+    setCategorizedItems({
+      sensitive: [],
+      "non-sensitive": [],
+    });
+    setRemainingItems(data.items);
   };
 
   const handleDragOver = (e) => {
@@ -98,11 +107,17 @@ export function SortingPuzzle({ data, onComplete }) {
           ))}
         </div>
       </div>
-
-      <div className="flex justify-end">
-        <Button onClick={checkAnswer} disabled={remainingItems.length > 0}>
-          Check Classification
-        </Button>
+      <div className="flex justify-between">
+        <div className="flex justify-start">
+          <Button className="bg-red-600 text-white" onClick={onHandleReset}>
+            Reset
+          </Button>
+        </div>
+        <div className="flex justify-end">
+          <Button onClick={checkAnswer} disabled={remainingItems.length > 0}>
+            Check Classification
+          </Button>
+        </div>
       </div>
     </div>
   );

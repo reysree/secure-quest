@@ -23,20 +23,20 @@ export const puzzles = {
         ],
       },
     },
-    {
-      id: "basic-encryption",
-      title: "Basic Encryption Exercise",
-      description:
-        "Use the cipher key to decrypt the message and reveal the security protocol.",
-      type: "decryption",
-      difficulty: "easy",
-      points: 150,
-      data: {
-        encryptedMessage: "FRPHER CNFFJBEQ EBGNGVBA",
-        hint: "ROT13 cipher: Replace each letter with the letter 13 positions after it in the alphabet.",
-        solution: "SECURE PASSWORD ROTATION",
-      },
-    },
+    // {
+    //   id: "basic-encryption",
+    //   title: "Basic Encryption Exercise",
+    //   description:
+    //     "Use the cipher key to decrypt the message and reveal the security protocol.",
+    //   type: "decryption",
+    //   difficulty: "easy",
+    //   points: 150,
+    //   data: {
+    //     encryptedMessage: "FRPHER CNFFJBEQ EBGNGVBA",
+    //     hint: "ROT13 cipher: Replace each letter with the letter 13 positions after it in the alphabet.",
+    //     solution: "SECURE PASSWORD ROTATION",
+    //   },
+    // },
     {
       id: "phishing-detection",
       title: "Phishing Alert Analysis",
@@ -74,25 +74,25 @@ export const puzzles = {
         ],
       },
     },
-    {
-      id: "consent-management",
-      title: "Consent Form Optimization",
-      description:
-        "For this registration, only your Full Name and Email Address are required. Please disable any additional data fields.",
-      type: "consent",
-      difficulty: "easy",
-      points: 200,
-      data: {
-        fields: [
-          { id: "1", label: "Full Name", required: true },
-          { id: "2", label: "Email Address", required: true },
-          { id: "3", label: "Phone Number", required: false },
-          { id: "4", label: "Home Address", required: false },
-          { id: "5", label: "Social Security Number", required: false },
-          { id: "6", label: "Date of Birth", required: false },
-        ],
-      },
-    },
+    // {
+    //   id: "consent-management",
+    //   title: "Consent Form Optimization",
+    //   description:
+    //     "For this registration, only your Full Name and Email Address are required. Please disable any additional data fields.",
+    //   type: "consent",
+    //   difficulty: "easy",
+    //   points: 200,
+    //   data: {
+    //     fields: [
+    //       { id: "1", label: "Full Name", required: true },
+    //       { id: "2", label: "Email Address", required: true },
+    //       { id: "3", label: "Phone Number", required: false },
+    //       { id: "4", label: "Home Address", required: false },
+    //       { id: "5", label: "Social Security Number", required: false },
+    //       { id: "6", label: "Date of Birth", required: false },
+    //     ],
+    //   },
+    // },
     {
       id: "risk-mitigation",
       title: "Risk Identification & Mitigation",
@@ -146,38 +146,38 @@ export const puzzles = {
         ],
       },
     },
-    {
-      id: "privacy-memory",
-      title: "Privacy Memory Challenge",
-      description: "Match each data privacy term with its correct definition.",
-      type: "memory",
-      difficulty: "easy",
-      points: 200,
-      data: {
-        pairs: [
-          {
-            id: "1",
-            term: "Data Minimization",
-            definition: "Collect only the minimum necessary data.",
-          },
-          {
-            id: "2",
-            term: "Informed Consent",
-            definition: "Obtain explicit permission for data processing.",
-          },
-          {
-            id: "3",
-            term: "Encryption",
-            definition: "Protect data by converting it into a secure code.",
-          },
-          {
-            id: "4",
-            term: "Access Control",
-            definition: "Restrict data access to authorized users.",
-          },
-        ],
-      },
-    },
+    // {
+    //   id: "privacy-memory",
+    //   title: "Privacy Memory Challenge",
+    //   description: "Match each data privacy term with its correct definition.",
+    //   type: "memory",
+    //   difficulty: "easy",
+    //   points: 200,
+    //   data: {
+    //     pairs: [
+    //       {
+    //         id: "1",
+    //         term: "Data Minimization",
+    //         definition: "Collect only the minimum necessary data.",
+    //       },
+    //       {
+    //         id: "2",
+    //         term: "Informed Consent",
+    //         definition: "Obtain explicit permission for data processing.",
+    //       },
+    //       {
+    //         id: "3",
+    //         term: "Encryption",
+    //         definition: "Protect data by converting it into a secure code.",
+    //       },
+    //       {
+    //         id: "4",
+    //         term: "Access Control",
+    //         definition: "Restrict data access to authorized users.",
+    //       },
+    //     ],
+    //   },
+    // },
     {
       id: "privacy-memory",
       title: "Privacy Memory Challenge",

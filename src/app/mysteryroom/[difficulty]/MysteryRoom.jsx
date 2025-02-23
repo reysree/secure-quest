@@ -12,11 +12,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 
 // 3D interactive objects
 import Door from "@/components/Door";
 import Computer from "@/components/Computer";
-import Board from "@/components/Board";
+import Board from "@/components/Clock";
 import Safe from "@/components/Safe";
 import Star from "@/components/Star";
 import LightSwitch from "@/components/LightSwitch";
@@ -32,6 +33,14 @@ import { PrivacyMemoryPuzzle } from "@/components/game/PrivacyMemoryPuzzle";
 
 // Puzzle definitions
 import { puzzles } from "@/lib/puzzles";
+import Flowerpot from "@/components/FlowerPot";
+import CoffeeMachine from "@/components/CoffeeMachine";
+import Oven from "@/components/Oven";
+import Dustbin from "@/components/Dustbin";
+import XeroxMachine from "@/components/XeroxMachine";
+import Table from "@/components/Table";
+import CeilingFan from "@/components/CeilingFan";
+import Clock from "@/components/Clock";
 
 // The Room component creates the static 3D environment
 function Room({ isBright }) {
@@ -49,12 +58,12 @@ function Room({ isBright }) {
       </mesh>
       {/* Back Wall */}
       <mesh position={[0, 0, -10]}>
-        <planeGeometry args={[20, 5]} />
+        <planeGeometry args={[20, 6]} />
         <meshStandardMaterial color={wallColor} side={2} />
       </mesh>
       {/* Left Wall */}
       <mesh position={[-10, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
-        <planeGeometry args={[20, 5]} />
+        <planeGeometry args={[20, 6]} />
         <meshStandardMaterial color={wallColor} side={2} />
       </mesh>
       {/* Right Wall */}
@@ -117,6 +126,8 @@ export default function MysteryRoom({ difficulty }) {
   const [taskTimes, setTaskTimes] = useState({});
   const [gameStarted, setGameStarted] = useState(false);
   const [isBright, setIsBright] = useState(false);
+  const [score, setScore] = useState(0);
+  const [currentPuzzle, setCurrentPuzzle] = useState(0);
 
   const toggleBrightness = () => {
     setIsBright((prev) => !prev);
@@ -128,6 +139,24 @@ export default function MysteryRoom({ difficulty }) {
   };
 
   // When an interactive object is clicked, assign the puzzle based on its index
+
+  const handleDoorOpen = () => {
+    if (currentPuzzle == availablePuzzles.length) {
+      toast({
+        title: "Congratulation",
+        description:
+          "You have completed all the tasks in the room and are ready to move to the next level",
+        className: "bg-green-500 text-black",
+      });
+    } else {
+      toast({
+        title: "Can't Escape",
+        description: "Please complete all the tasks in the room to exit",
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleObjectClick = (index) => {
     if (completedPuzzles[index]) {
       toast({ title: "Puzzle already completed" });
@@ -176,6 +205,8 @@ export default function MysteryRoom({ difficulty }) {
       // Save the elapsed time for this puzzle.
       setTaskTimes((prev) => ({ ...prev, [activePuzzleIndex]: taskTimer }));
       setCompletedPuzzles((prev) => ({ ...prev, [activePuzzleIndex]: true }));
+      setScore((prev) => prev + availablePuzzles[currentPuzzle].points);
+      setCurrentPuzzle((prev) => prev + 1);
       setDialogOpen(false);
     } else {
       toast({
@@ -203,6 +234,10 @@ export default function MysteryRoom({ difficulty }) {
         </div>
       ) : (
         <div className="relative w-screen h-screen">
+          <Progress
+            value={(currentPuzzle / availablePuzzles.length) * 100}
+            className="fixed h-4"
+          />
           <Canvas
             shadows
             camera={{ position: [0, 2, 12], fov: 50 }}
@@ -213,24 +248,24 @@ export default function MysteryRoom({ difficulty }) {
             <Room isBright={isBright} />
 
             {/* Interactive objects mapped to puzzle indices */}
-            <Star onClick={handleScrollClick} />
+            {/* <Star onClick={handleScrollClick} /> */}
             <Door
-              onClick={() => handleObjectClick(10)}
+              onClick={handleDoorOpen}
               position={[10, -0.5, 0]}
               rotation={[0, -Math.PI / 2, 0]}
             />
             <Computer
-              onClick={() => handleObjectClick(2)}
-              position={[0, -1, -9.95]}
+              onClick={() => handleObjectClick(1)}
+              position={[0.4, 0.2, -9.95]}
             />
-            <Board
+            <Clock
               onClick={() => handleObjectClick(0)}
-              position={[-9.8, 0, 0]}
-              rotation={[0, Math.PI / 2, 0]}
+              position={[5, 1.5, -5]}
+              rotation={[0, Math.PI / 90, 0]}
             />
             <Safe
-              onClick={() => handleObjectClick(5)}
-              position={[5, -1.6, -9.95]}
+              onClick={() => handleObjectClick(2)}
+              position={[8, -1.6, -9.95]}
             />
             <LightSwitch
               onClick={toggleBrightness}
@@ -239,10 +274,40 @@ export default function MysteryRoom({ difficulty }) {
               rotation={[0, -Math.PI / 2, 0]}
             />
             <Cupboard
-              onClick={() => handleObjectClick(4)}
+              onClick={() => handleObjectClick(3)}
               position={[-9, 0, 2]} // Adjust position to attach to a wall or as desired
               rotation={[0, Math.PI / 2, 0]}
             />
+            <Flowerpot
+              position={[-6.4, -1, 0]} // Adjust position to attach to a wall or as desired
+              rotation={[0, Math.PI / 2, 0]}
+            />
+            <Flowerpot
+              position={[-6.4, -1, 1]} // Adjust position to attach to a wall or as desired
+              rotation={[0, Math.PI / 2, 0]}
+            />
+            <Flowerpot
+              position={[-6.4, -1, 2]} // Adjust position to attach to a wall or as desired
+              rotation={[0, Math.PI / 2, 0]}
+            />
+            <CoffeeMachine
+              position={[-6.8, 0, 4]} // Adjust position to attach to a wall or as desired
+              rotation={[0, Math.PI / 2, 0]}
+            />
+            <Oven
+              position={[2.4, -1, -3]} // Adjust position to attach to a wall or as desired
+              rotation={[0, Math.PI / 90, 0]}
+            />
+            <Dustbin
+              position={[-0.8, -1.5, -4.8]} // Adjust position to attach to a wall or as desired
+              rotation={[0, Math.PI / 2, 0]}
+            />
+            <XeroxMachine
+              position={[-6.4, -1.3, -3.3]} // Adjust position to attach to a wall or as desired
+              rotation={[0, Math.PI / 4, 0]}
+            />
+            <Table position={[-2.7, -1, -2.2]} rotation={[0, 0, 0]} />
+            <CeilingFan position={[-1, 2, 0]} />
           </Canvas>
           <Dialog open={overlayOpen} onOpenChange={setOverlayOpen}>
             <DialogContent
@@ -280,13 +345,13 @@ export default function MysteryRoom({ difficulty }) {
                       availablePuzzles[activePuzzleIndex],
                       handlePuzzleComplete
                     )}
-                    <p>{taskTimer}</p>
+                    {/* <p>{taskTimer}</p> */}
                   </div>
-                  <DialogFooter>
+                  {/* <DialogFooter>
                     <Button onClick={() => handlePuzzleComplete(false)}>
                       Complete
                     </Button>
-                  </DialogFooter>
+                  </DialogFooter> */}
                 </>
               )}
             </DialogContent>
