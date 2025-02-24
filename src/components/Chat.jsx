@@ -4,13 +4,11 @@ import { MessageCircle } from "lucide-react"; // Chat icon
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 
 const Chat = () => {
   const initial_message =
-    "Hello! I'm Cypher, your all-knowing guide to Sreeram Bangaru. Feel free to ask me anything about him. We can talk about pricing later!";
+    "Hello! I'm Cypher, your guide to learn data privacy and security. Feel free to ask me anything about the concepts.";
   const [chatOpen, SetChatOpen] = useState(false);
   const [message, SetMessage] = useState("");
   const [chatMessages, SetChatMessages] = useState([
@@ -79,7 +77,7 @@ const Chat = () => {
       <motion.div
         className="fixed bottom-0 right-0 bg-white mr-2 w-[25%] h-[50%] shadow-lg rounded-t-lg flex flex-col justify-between"
         initial={{ y: "100%" }} // Starts completely off-screen
-        animate={{ y: chatOpen ? 0 : "100%" }} // Slides up into view or back down
+        animate={{ y: chatOpen ? 0 : "100%" }} // Slides into view or back down
         transition={{ duration: 1 }} // Smooth animation
       >
         <div className="flex justify-between items-center border-b-2">
