@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { Canvas } from "@react-three/fiber";
+import Link from "next/link";
 import {
   Dialog,
   DialogContent,
@@ -18,9 +19,7 @@ import { Progress } from "@/components/ui/progress";
 // 3D interactive objects
 import Door from "@/components/Door";
 import Computer from "@/components/Computer";
-import Board from "@/components/Clock";
 import Safe from "@/components/Safe";
-import Star from "@/components/Star";
 import LightSwitch from "@/components/LightSwitch";
 import Cupboard from "@/components/CupBoard";
 
@@ -430,6 +429,9 @@ Which container reveals what’s truly in hoard?`,
                 <Label className="text-2xl text-white italic pt-3">
                   Score : {score}
                 </Label>
+                <Link href="/">
+                  <Button className="mr-5">Home Page</Button>
+                </Link>
               </div>
             </div>
           )}
@@ -455,6 +457,14 @@ Which container reveals what’s truly in hoard?`,
                 <Label className="text-2xl text-white italic pt-3">
                   Time Taken : {totalTime} seconds
                 </Label>
+                <div className="flex flex-row pt-3">
+                  <Link href="/">
+                    <Button className="mr-5">Home Page</Button>
+                  </Link>
+                  <Link href="/next-level">
+                    <Button>Next Level</Button>
+                  </Link>
+                </div>
               </div>
             </div>
           )}

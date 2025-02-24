@@ -3,10 +3,78 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Shield, Brain, Trophy } from "lucide-react";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useState, useEffect } from "react";
 
 export default function Home() {
+  const user = useSelector((state) => state.user.user);
+  const router = useRouter();
+  const [userfirstname, setUserfirstname] = useState("");
+  const [userlastname, setUserlastname] = useState("");
+  const [profile, setProfile] = useState(false);
+  console.log("the user details are : ", user);
+
+  useEffect(() => {
+    if (user != null) {
+      setProfile(true);
+      setUserfirstname(user.firstName.substring(0, 1));
+      setUserlastname(user.lastName.substring(0, 1));
+    }
+  }, [user]);
+
+  const onHandleLogout = () => {
+    router.push("/logout");
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-accent">
+      <nav className="flex flex-row justify-end p-3 pr-7">
+        <Button className="mr-3">ScoreBoard</Button>
+        {profile ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button>{userfirstname + userlastname}</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel>Account Details</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem>
+                  {user.firstName + " " + user.lastName}
+                </DropdownMenuItem>
+                <DropdownMenuItem>{user.email}</DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Button
+                    className="bg-red-500 text-white"
+                    onClick={() => onHandleLogout()}
+                  >
+                    Logout
+                  </Button>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <Link href="/login">
+            <Button>Login</Button>
+          </Link>
+        )}
+      </nav>
       <main className="container mx-auto px-4 py-16">
         <div className="text-center space-y-6">
           <h1 className="text-5xl font-bold tracking-tighter">SecureQuest</h1>

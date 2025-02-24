@@ -1,14 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Shield, ShieldAlert, ShieldOff } from "lucide-react";
+import { auth } from "@/firebase/firebaseConfig";
+import { onAuthStateChanged } from "firebase/auth";
 
 export default function DifficultySelection() {
   const router = useRouter();
   const [selectedDifficulty, setSelectedDifficulty] = useState(null);
+
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        router.push("/login"); // Redirect if not logged in
+      } else {
+        setUser(user);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [router]);
+
+  if (!user) {
+    return <p>Loading...</p>;
+  }
 
   const difficulties = [
     {
