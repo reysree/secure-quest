@@ -1,11 +1,9 @@
-// components/game/ConsentFormPuzzle.jsx
 "use client";
 import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 export function ConsentFormPuzzle({ data, onComplete }) {
-  // Create a state object where every field is initially enabled (true)
   const [selectedFields, setSelectedFields] = useState(
     data.fields.reduce((acc, field) => {
       acc[field.id] = true;

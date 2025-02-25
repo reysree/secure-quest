@@ -50,7 +50,6 @@ export function SortingPuzzle({ data, onComplete = () => {} }) {
       return categorizedItems[category]?.includes(item.text);
     });
     if (!isCorrect) {
-      // Increase local error count and show a toast
       setLocalErrorCount((prev) => prev + 1);
       toast({ title: "Incorrect classification" });
     } else {

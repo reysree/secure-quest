@@ -72,7 +72,6 @@ export default function DifficultySelection() {
   const handleDifficultySelect = (difficulty) => {
     setSelectedDifficulty(difficulty);
     router.push(`/mysteryroom/${difficulty}`);
-    //router.push("/mysteryroom");
   };
 
   return (

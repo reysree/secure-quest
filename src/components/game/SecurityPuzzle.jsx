@@ -34,7 +34,7 @@ export function SecurityPuzzle({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           errorCount: globalErrorCount,
-          answersArray: [], // initially empty
+          answersArray: [],
         }),
       });
       let result;

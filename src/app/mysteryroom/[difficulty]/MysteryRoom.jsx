@@ -17,21 +17,16 @@ import { useToast } from "@/hooks/use-toast";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useRouter } from "next/navigation";
+import Chat from "@/components/Chat";
+import { Label } from "@radix-ui/react-label";
+import { puzzles } from "@/lib/puzzles";
+import Room from "./Room";
 // 3D interactive objects
 import Door from "@/components/game-objects/Door";
 import Computer from "@/components/game-objects/Computer";
 import Safe from "@/components/game-objects/Safe";
 import LightSwitch from "@/components/game-objects/LightSwitch";
 import Cupboard from "@/components/game-objects/CupBoard";
-
-// Puzzle components – ensure these are correctly imported from your files
-import { SecurityPuzzle } from "@/components/game/SecurityPuzzle";
-import { SortingPuzzle } from "@/components/game/SortingPuzzle";
-import { RiskMitigationPuzzle } from "@/components/game/RiskMitigationPuzzle";
-import { PrivacyMemoryPuzzle } from "@/components/game/PrivacyMemoryPuzzle";
-
-// Puzzle definitions
-import { puzzles } from "@/lib/puzzles";
 import Flowerpot from "@/components/game-objects/FlowerPot";
 import CoffeeMachine from "@/components/game-objects/CoffeeMachine";
 import Oven from "@/components/game-objects/Oven";
@@ -40,51 +35,11 @@ import XeroxMachine from "@/components/game-objects/XeroxMachine";
 import Table from "@/components/game-objects/Table";
 import CeilingFan from "@/components/game-objects/CeilingFan";
 import Clock from "@/components/game-objects/Clock";
-import Chat from "@/components/Chat";
-import { Label } from "@radix-ui/react-label";
-
-// The Room component creates the static 3D environment
-function Room({ isBright }) {
-  // Use the isBright state to determine room colors.
-  const floorColor = isBright ? "#f4d03f" : "#444"; // cream vs dark gray
-  const wallColor = isBright ? "#fdebd0" : "#666"; // white vs medium gray
-  const ceilingColor = isBright ? "#fdfefe" : "#555"; // white vs dark gray
-
-  return (
-    <group>
-      {/* Floor */}
-      <mesh position={[0, -2.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[20, 20]} />
-        <meshStandardMaterial color={floorColor} />
-      </mesh>
-      {/* Back Wall */}
-      <mesh position={[0, 0, -10]}>
-        <planeGeometry args={[20, 6]} />
-        <meshStandardMaterial color={wallColor} side={2} />
-      </mesh>
-      {/* Left Wall */}
-      <mesh position={[-10, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
-        <planeGeometry args={[20, 6]} />
-        <meshStandardMaterial color={wallColor} side={2} />
-      </mesh>
-      {/* Right Wall */}
-      <mesh position={[10, 0, 0]} rotation={[0, -Math.PI / 2, 0]}>
-        <planeGeometry args={[20, 5]} />
-        <meshStandardMaterial color={wallColor} side={2} />
-      </mesh>
-      {/* Ceiling */}
-      <mesh position={[0, 2.5, 0]} rotation={[Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[20, 20]} />
-        <meshStandardMaterial color={ceilingColor} />
-      </mesh>
-      {/* Front Wall (pushed far back) */}
-      <mesh position={[0, 0, 30]} rotation={[0, 0, Math.PI]}>
-        <planeGeometry args={[20, 5]} />
-        <meshStandardMaterial color={wallColor} side={2} />
-      </mesh>
-    </group>
-  );
-}
+// Puzzle components – ensure these are correctly imported from your files
+import { SecurityPuzzle } from "@/components/game/SecurityPuzzle";
+import { SortingPuzzle } from "@/components/game/SortingPuzzle";
+import { RiskMitigationPuzzle } from "@/components/game/RiskMitigationPuzzle";
+import { PrivacyMemoryPuzzle } from "@/components/game/PrivacyMemoryPuzzle";
 
 // Helper to render the appropriate puzzle component based on type
 function renderPuzzleComponent(puzzle, globalErrorCount, onComplete) {
@@ -127,7 +82,6 @@ export default function MysteryRoom({ difficulty }) {
   const [doorOpen, setDoorOpen] = useState(false);
   const [taskTimer, setTaskTimer] = useState(0);
   const [intervalId, setIntervalId] = useState(null);
-  // Record elapsed time for each task (object keyed by puzzle index).
   const [taskTimes, setTaskTimes] = useState({});
   const [gameStarted, setGameStarted] = useState(false);
   const [isBright, setIsBright] = useState(false);
@@ -139,7 +93,6 @@ export default function MysteryRoom({ difficulty }) {
   const [globalErrorCount, setGlobalErrorCount] = useState(0);
   const pageVariants = {
     visible: { opacity: 1 },
-    //animate: { opacity: 1 },
     hidden: { opacity: 0 },
   };
   const riddles = [
@@ -209,21 +162,12 @@ Which container reveals what’s truly in hoard?`,
     setOverlayOpen(true);
   };
 
-  // When an interactive object is clicked, assign the puzzle based on its index
-
   const handleDoorOpen = () => {
     if (currentPuzzle == availablePuzzles.length) {
-      // toast({
-      //   title: "Congratulations!",
-      //   description:
-      //     "You have completed all the tasks in the room and are ready to move to the next level",
-      //   className: "bg-green-500 text-black",
-      // });
       const total_time = Object.values(taskTimes).reduce(
         (acc, time) => acc + time,
         0
       );
-      //console.log("The total time taken is : ", totalTime);
       setTotalTime(total_time);
       setDoorOpen(true);
     } else {
@@ -238,7 +182,6 @@ Which container reveals what’s truly in hoard?`,
   const handleObjectClick = (index) => {
     // Only allow clicking on the object whose index equals the currentPuzzle index
     if (index !== currentPuzzle || isBright == false) {
-      //toast({ title: "Please complete previous tasks first" });
       return;
     }
     // If puzzle already completed, show a message
@@ -273,7 +216,6 @@ Which container reveals what’s truly in hoard?`,
       // Reset timer when dialog closes.
       setTaskTimer(0);
     }
-    // Cleanup when unmounting.
     return () => {
       if (intervalId) clearInterval(intervalId);
     };
@@ -291,16 +233,11 @@ Which container reveals what’s truly in hoard?`,
   const handlePuzzleComplete = (correct, localErrorCount) => {
     if (correct) {
       toast({ title: "Correct!", description: "Task completed successfully" });
-      console.log("The time taken for this puzzle is : ", taskTimer);
       // Save the elapsed time for this puzzle.
       setTaskTimes((prev) => ({ ...prev, [activePuzzleIndex]: taskTimer }));
       setCompletedPuzzles((prev) => ({ ...prev, [activePuzzleIndex]: true }));
       setScore((prev) => prev + availablePuzzles[currentPuzzle].points);
       setGlobalErrorCount(localErrorCount);
-      console.log(
-        "The error count from completed puzzle is : ",
-        localErrorCount
-      );
       setCurrentPuzzle((prev) => prev + 1);
       setDialogOpen(false);
       setCurrentRiddle((prev) => prev + 1);
@@ -407,41 +344,40 @@ Which container reveals what’s truly in hoard?`,
                 <LightSwitch
                   onClick={toggleBrightness}
                   isOn={isBright}
-                  position={[10, 1, 1]} // adjust position to be beside the door
+                  position={[10, 1, 1]}
                   rotation={[0, -Math.PI / 2, 0]}
                 />
                 <Cupboard
                   onClick={() => handleObjectClick(3)}
-                  position={[-9, 0, 2]} // Adjust position to attach to a wall or as desired
+                  position={[-9, 0, 2]}
                   rotation={[0, Math.PI / 2, 0]}
                 />
                 <Flowerpot
-                  position={[-6.4, -1, 0]} // Adjust position to attach to a wall or as desired
+                  position={[-6.4, -1, 0]}
                   rotation={[0, Math.PI / 2, 0]}
                 />
                 <Flowerpot
-                  position={[-6.4, -1, 1]} // Adjust position to attach to a wall or as desired
+                  position={[-6.4, -1, 1]}
                   rotation={[0, Math.PI / 2, 0]}
                 />
                 <Flowerpot
-                  position={[-6.4, -1, 2]} // Adjust position to attach to a wall or as desired
+                  position={[-6.4, -1, 2]}
                   rotation={[0, Math.PI / 2, 0]}
                 />
                 <CoffeeMachine
-                  position={[-6.8, 0, 4]} // Adjust position to attach to a wall or as desired
+                  position={[-6.8, 0, 4]}
                   rotation={[0, Math.PI / 2, 0]}
-                  //onClick={handleScrollClick}
                 />
                 <Oven
-                  position={[2.4, -1, -3]} // Adjust position to attach to a wall or as desired
+                  position={[2.4, -1, -3]}
                   rotation={[0, Math.PI / 90, 0]}
                 />
                 <Dustbin
-                  position={[-0.8, -1.5, -4.8]} // Adjust position to attach to a wall or as desired
+                  position={[-0.8, -1.5, -4.8]}
                   rotation={[0, Math.PI / 2, 0]}
                 />
                 <XeroxMachine
-                  position={[-6.4, -1.3, -3.3]} // Adjust position to attach to a wall or as desired
+                  position={[-6.4, -1.3, -3.3]}
                   rotation={[0, Math.PI / 4, 0]}
                 />
                 <Table position={[-2.7, -1, -2.2]} rotation={[0, 0, 0]} />
@@ -469,9 +405,9 @@ Which container reveals what’s truly in hoard?`,
                     <Label className="text-2xl text-white italic pt-3">
                       Score : {score}
                     </Label>
-                    <Link href="/">
+                    {/* <Link href="/">
                       <Button className="mr-5">Home Page</Button>
-                    </Link>
+                    </Link> */}
                   </div>
                 </div>
               )}
@@ -532,29 +468,24 @@ Which container reveals what’s truly in hoard?`,
                           globalErrorCount,
                           handlePuzzleComplete
                         )}
-                        {/* <p>{taskTimer}</p> */}
                       </div>
-                      {/* <DialogFooter>
-                    <Button onClick={() => handlePuzzleComplete(false)}>
-                      Complete
-                    </Button>
-                  </DialogFooter> */}
                     </>
                   )}
                 </DialogContent>
               </Dialog>
             </div>
           )}
-          <Chat></Chat>
-
-          <div className="fixed bottom-4 left-4 z-50">
-            <button
-              onClick={handleHint}
-              className="fixed bottom-4 left-4 bg-blue-500 text-white text-2xl w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-600 transition"
-            >
-              ?
-            </button>
-          </div>
+          {gameStarted && <Chat></Chat>}
+          {gameStarted && (
+            <div className="fixed bottom-4 left-4 z-50">
+              <button
+                onClick={handleHint}
+                className="fixed bottom-4 left-4 bg-blue-500 text-white text-2xl w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-600 transition"
+              >
+                ?
+              </button>
+            </div>
+          )}
         </div>
       </motion.div>
     </AnimatePresence>

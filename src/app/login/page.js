@@ -13,7 +13,6 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-  //const [noLogin, setNoLogin] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
   const { toast } = useToast();
@@ -36,7 +35,16 @@ export default function Login() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
-      <h2 className="text-2xl font-bold mb-4">Login</h2>
+      <div className="relative w-full max-w-md">
+        <Button
+          onClick={() => router.push("/")}
+          variant="ghost"
+          className="absolute left-0 p-2"
+        >
+          ← Back
+        </Button>
+        <h2 className="text-2xl font-bold text-center">Login</h2>
+      </div>
       <form onSubmit={handleLogin} className="flex flex-col gap-4">
         <Input
           type="email"
@@ -66,7 +74,6 @@ export default function Login() {
           </Link>
         </div>
       </form>
-      {/* {message && <p className="mt-2">{message}</p>} */}
     </div>
   );
 }

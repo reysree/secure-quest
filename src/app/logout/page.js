@@ -14,13 +14,13 @@ export default function LogoutPage() {
     const handleLogout = async () => {
       try {
         await logout();
-        dispatch(clearUser()); // ✅ Remove user from Redux
-        localStorage.removeItem("user"); // ✅ Remove user from localStorage
+        dispatch(clearUser()); //Remove user from Redux
+        localStorage.removeItem("user"); //Remove user from localStorage
         toast({
           title: "Logged out",
           description: "You have been signed out.",
         });
-        router.push("/"); // ✅ Redirect to login
+        router.push("/"); //Redirect to login
       } catch (error) {
         console.error("Logout Error:", error);
         toast({

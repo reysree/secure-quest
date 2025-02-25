@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import { MessageCircle } from "lucide-react"; // Chat icon
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,12 +40,10 @@ const Chat = () => {
           throw new Error("Failed to fetch data from server");
         }
         const aiMessage = await response.json();
-        //console.log("the response received to chat window : ", aiMessage);
         SetChatMessages([...updatedMessage, aiMessage]);
       } catch (error) {
         console.error(error);
       }
-      //console.log(chatMessages);
     }
   };
 
@@ -58,14 +55,6 @@ const Chat = () => {
         animate={{ x: 0 }}
         transition={{ duration: 5.5, ease: "linear" }}
       >
-        {/* <motion.div
-          className="absolute -top-9 right-10 bg-blue-500 text-white px-4 py-2 rounded-xl shadow-lg"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1, duration: 0.5 }}
-        >
-          <p>Pss.. Click me to know a secret</p>
-        </motion.div> */}
         <Image
           src={"/cypher-watch.gif"}
           alt="cypher-watch"

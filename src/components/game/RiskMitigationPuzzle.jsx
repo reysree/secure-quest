@@ -38,7 +38,6 @@ export function RiskMitigationPuzzle({ data, onComplete }) {
       <p className="text-muted-foreground">
         Drag the appropriate mitigation measure onto each risk scenario.
       </p>
-      {/* Flex container for side-by-side layout */}
       <div className="flex flex-row gap-8">
         {/* Left Column: Risk scenarios */}
         <div className="flex-1 space-y-4">
@@ -66,7 +65,6 @@ export function RiskMitigationPuzzle({ data, onComplete }) {
             </div>
           ))}
         </div>
-        {/* Right Column: Draggable mitigation measures */}
         <div className="flex-1 space-y-4">
           <h3 className="text-xl font-bold mb-4">
             Available Mitigation Measures

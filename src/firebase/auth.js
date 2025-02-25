@@ -32,7 +32,7 @@ export const signUp = async (email, password, firstName, lastName) => {
   }
 };
 
-// ✅ Ensure login function is correctly exported
+//Ensure login function is correctly exported
 export const login = async (email, password) => {
   try {
     console.log("Attempting login for:", email);
@@ -53,7 +53,7 @@ export const login = async (email, password) => {
     if (userDoc.exists()) {
       let userData = userDoc.data();
 
-      // ✅ Convert Firestore Timestamp to ISO String (serializable)
+      //Convert Firestore Timestamp to ISO String (serializable)
       return {
         uid: user.uid,
         firstName: userData.firstName,

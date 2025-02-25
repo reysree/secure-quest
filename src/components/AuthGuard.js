@@ -23,7 +23,7 @@ export default function AuthGuard({ children }) {
   }, [router]);
 
   if (loading) {
-    return <p>Loading...</p>; // Show a loading screen while checking auth
+    return <p>Loading...</p>;
   }
 
   return children;

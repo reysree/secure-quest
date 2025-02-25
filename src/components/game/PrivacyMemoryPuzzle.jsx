@@ -31,7 +31,7 @@ export function PrivacyMemoryPuzzle({ data, onComplete }) {
   // On mount, generate and shuffle cards
   useEffect(() => {
     const generatedCards = generateCards();
-    // Simple shuffle
+    //shuffle the cards
     setCards(generatedCards.sort(() => Math.random() - 0.5));
   }, [data]);
 
