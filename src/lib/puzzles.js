@@ -7,7 +7,7 @@ export const puzzles = {
         "Sort the following data elements into sensitive and non-sensitive categories.",
       type: "sorting",
       difficulty: "easy",
-      points: 100,
+      points: 200,
       data: {
         items: [
           { id: "1", text: "Social Security Number", category: "sensitive" },
@@ -47,6 +47,7 @@ export const puzzles = {
       points: 200,
       data: {
         emails: [
+          // 10 Easy Questions
           {
             id: "1",
             subject: "Urgent: Update Your Password",
@@ -54,22 +55,176 @@ export const puzzles = {
             content:
               "Dear valued customer, your account will be suspended unless you verify your credentials immediately.",
             isPhishing: true,
+            difficulty: "easy",
           },
           {
             id: "2",
-            subject: "Quarterly Security Training",
-            sender: "training@company.com",
-            content:
-              "Please complete your scheduled security awareness training by the end of this quarter.",
+            subject: "Meeting Reminder",
+            sender: "hr@company.com",
+            content: "Don't forget about the meeting tomorrow at 10 AM.",
             isPhishing: false,
+            difficulty: "easy",
           },
           {
             id: "3",
-            subject: "You've Won a Prize!",
-            sender: "lottery@winners-intl.net",
+            subject: "Invoice Overdue",
+            sender: "billing@company.com",
             content:
-              "Congratulations! Click here to claim your $1,000,000 prize immediately!",
+              "Your invoice is overdue. Please make a payment immediately.",
             isPhishing: true,
+            difficulty: "easy",
+          },
+          {
+            id: "4",
+            subject: "Team Lunch Invitation",
+            sender: "manager@company.com",
+            content:
+              "Let's meet for lunch at our usual spot. No urgent action needed.",
+            isPhishing: false,
+            difficulty: "easy",
+          },
+          {
+            id: "5",
+            subject: "Security Alert",
+            sender: "security@bank-secure-verify.com",
+            content:
+              "We detected an unusual login attempt. Verify your identity now.",
+            isPhishing: true,
+            difficulty: "easy",
+          },
+          {
+            id: "6",
+            subject: "Weekly Newsletter",
+            sender: "newsletter@company.com",
+            content:
+              "Check out the latest updates and news in our weekly newsletter.",
+            isPhishing: false,
+            difficulty: "easy",
+          },
+          {
+            id: "7",
+            subject: "Policy Update",
+            sender: "compliance@company.com",
+            content:
+              "Our company policy has been updated. Please review the changes.",
+            isPhishing: false,
+            difficulty: "easy",
+          },
+          {
+            id: "8",
+            subject: "Appointment Confirmation",
+            sender: "appointments@company.com",
+            content:
+              "Your appointment has been confirmed for tomorrow at 3 PM.",
+            isPhishing: false,
+            difficulty: "easy",
+          },
+          {
+            id: "9",
+            subject: "Subscription Renewal Reminder",
+            sender: "billing@service.com",
+            content:
+              "Your subscription is up for renewal. Please update your payment details.",
+            isPhishing: true,
+            difficulty: "easy",
+          },
+          {
+            id: "10",
+            subject: "Event Invitation",
+            sender: "events@company.com",
+            content: "Join us for our upcoming event next week. RSVP now!",
+            isPhishing: false,
+            difficulty: "easy",
+          },
+          // 10 Tough Questions
+          {
+            id: "11",
+            subject: "Confidential Update Required",
+            sender: "ceo@company.com",
+            content:
+              "Please review the confidential update attached to this email.",
+            isPhishing: true,
+            difficulty: "tough",
+          },
+          {
+            id: "12",
+            subject: "Invoice Issue Notice",
+            sender: "billing@company.com",
+            content:
+              "There is an issue with your recent invoice. Click here to resolve.",
+            isPhishing: true,
+            difficulty: "tough",
+          },
+          {
+            id: "13",
+            subject: "Reward Claim Notification",
+            sender: "rewards@company.com",
+            content:
+              "Congratulations! You have been selected for a reward. Claim it now.",
+            isPhishing: true,
+            difficulty: "tough",
+          },
+          {
+            id: "14",
+            subject: "System Downtime Advisory",
+            sender: "it-support@company.com",
+            content:
+              "Scheduled maintenance will occur this weekend. Plan accordingly.",
+            isPhishing: false,
+            difficulty: "tough",
+          },
+          {
+            id: "15",
+            subject: "Password Reset Required Immediately",
+            sender: "it-support@company.com",
+            content:
+              "Due to a security breach, an immediate password reset is required.",
+            isPhishing: true,
+            difficulty: "tough",
+          },
+          {
+            id: "16",
+            subject: "Legal Notice Attached",
+            sender: "legal@company.com",
+            content: "Please review the attached legal notice immediately.",
+            isPhishing: true,
+            difficulty: "tough",
+          },
+          {
+            id: "17",
+            subject: "Software Update Available",
+            sender: "noreply@updates.com",
+            content:
+              "A new software update is available. Please update to the latest version.",
+            isPhishing: false,
+            difficulty: "tough",
+          },
+          {
+            id: "18",
+            subject: "Bank Account Verification",
+            sender: "verification@bank.com",
+            content:
+              "Verify your account details immediately to avoid suspension.",
+            isPhishing: true,
+            difficulty: "tough",
+          },
+          {
+            id: "19",
+            subject: "Conference Invitation",
+            sender: "events@conference.com",
+            content:
+              "You are invited to speak at our upcoming conference. RSVP required.",
+            isPhishing: false,
+            difficulty: "tough",
+          },
+          {
+            id: "20",
+            subject: "Urgent: Account Notice",
+            sender: "support@bank-secure-verify.com",
+            content:
+              "Important notice regarding your account. Immediate action is required.",
+            isPhishing: true,
+            difficulty: "tough",
           },
         ],
       },

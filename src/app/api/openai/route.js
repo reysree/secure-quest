@@ -3,7 +3,7 @@ import OPENAI from "openai";
 import { PineconeStore } from "@langchain/pinecone";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { Pinecone } from "@pinecone-database/pinecone";
-import { TextLoader } from "langchain/document_loaders/fs/text";
+//import { TextLoader } from "langchain/document_loaders/fs/text";
 
 const systemprompt = `Your name is Cypher. You are an AI assistant and teacher specialized in data privacy and data security. Your role is to help users understand and learn key compliance concepts, definitions, and best practices regarding data privacy and data security. Use the following guidelines:
 
@@ -30,7 +30,7 @@ const PINECONE_API_KEY = process.env.PINECONE_API_KEY;
 const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME;
 
 let vectorStore;
-let fullDocument;
+//let fullDocument;
 
 async function getVectorStore() {
   if (vectorStore) return vectorStore;

@@ -1,31 +1,30 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { Canvas } from "@react-three/fiber";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-
+import { useRouter } from "next/navigation";
 // 3D interactive objects
-import Door from "@/components/Door";
-import Computer from "@/components/Computer";
-import Safe from "@/components/Safe";
-import LightSwitch from "@/components/LightSwitch";
-import Cupboard from "@/components/CupBoard";
+import Door from "@/components/game-objects/Door";
+import Computer from "@/components/game-objects/Computer";
+import Safe from "@/components/game-objects/Safe";
+import LightSwitch from "@/components/game-objects/LightSwitch";
+import Cupboard from "@/components/game-objects/CupBoard";
 
 // Puzzle components – ensure these are correctly imported from your files
-//import { SortingPuzzle } from "@/components/game/SortingPuzzle";
-import { DecryptionPuzzle } from "@/components/game/DecryptionPuzzle";
 import { SecurityPuzzle } from "@/components/game/SecurityPuzzle";
 import { SortingPuzzle } from "@/components/game/SortingPuzzle";
 import { RiskMitigationPuzzle } from "@/components/game/RiskMitigationPuzzle";
@@ -33,14 +32,14 @@ import { PrivacyMemoryPuzzle } from "@/components/game/PrivacyMemoryPuzzle";
 
 // Puzzle definitions
 import { puzzles } from "@/lib/puzzles";
-import Flowerpot from "@/components/FlowerPot";
-import CoffeeMachine from "@/components/CoffeeMachine";
-import Oven from "@/components/Oven";
-import Dustbin from "@/components/Dustbin";
-import XeroxMachine from "@/components/XeroxMachine";
-import Table from "@/components/Table";
-import CeilingFan from "@/components/CeilingFan";
-import Clock from "@/components/Clock";
+import Flowerpot from "@/components/game-objects/FlowerPot";
+import CoffeeMachine from "@/components/game-objects/CoffeeMachine";
+import Oven from "@/components/game-objects/Oven";
+import Dustbin from "@/components/game-objects/Dustbin";
+import XeroxMachine from "@/components/game-objects/XeroxMachine";
+import Table from "@/components/game-objects/Table";
+import CeilingFan from "@/components/game-objects/CeilingFan";
+import Clock from "@/components/game-objects/Clock";
 import Chat from "@/components/Chat";
 import { Label } from "@radix-ui/react-label";
 
@@ -88,16 +87,18 @@ function Room({ isBright }) {
 }
 
 // Helper to render the appropriate puzzle component based on type
-function renderPuzzleComponent(puzzle, onComplete) {
-  //console.log("The puzzle seleceted is : ", puzzle.type);
-  //console.log("The puzzle data being sent is : ", puzzle.data);
+function renderPuzzleComponent(puzzle, globalErrorCount, onComplete) {
   switch (puzzle.type) {
     case "sorting":
       return <SortingPuzzle data={puzzle.data} onComplete={onComplete} />;
-    case "decryption":
-      return <DecryptionPuzzle data={puzzle.data} onComplete={onComplete} />;
     case "security":
-      return <SecurityPuzzle data={puzzle.data} onComplete={onComplete} />;
+      return (
+        <SecurityPuzzle
+          data={puzzle.data}
+          globalErrorCount={globalErrorCount}
+          onComplete={onComplete}
+        />
+      );
     case "risk-mitigation":
       return (
         <RiskMitigationPuzzle data={puzzle.data} onComplete={onComplete} />
@@ -111,6 +112,7 @@ function renderPuzzleComponent(puzzle, onComplete) {
 
 export default function MysteryRoom({ difficulty }) {
   const { toast } = useToast();
+  const router = useRouter();
   // Get puzzles for the selected difficulty level
   const availablePuzzles = puzzles[difficulty] || [];
 
@@ -133,6 +135,13 @@ export default function MysteryRoom({ difficulty }) {
   const [currentPuzzle, setCurrentPuzzle] = useState(0);
   const [currentRiddle, setCurrentRiddle] = useState(0);
   const [totalTime, setTotalTime] = useState(0);
+  const [isExiting, setIsExiting] = useState(false);
+  const [globalErrorCount, setGlobalErrorCount] = useState(0);
+  const pageVariants = {
+    visible: { opacity: 1 },
+    //animate: { opacity: 1 },
+    hidden: { opacity: 0 },
+  };
   const riddles = [
     {
       riddle: `Without light, secrets hide;
@@ -181,6 +190,14 @@ Which container reveals what’s truly in hoard?`,
         handleScrollClick();
       }, 1000);
     }
+  };
+
+  const handleNextLevel = () => {
+    // Trigger fade out by setting the exit flag
+    setIsExiting(true);
+    setTimeout(() => {
+      router.push("/crosswordroom");
+    }, 500); // Duration should match exit transition duration
   };
 
   // When the scroll is clicked, open the overlay
@@ -238,6 +255,10 @@ Which container reveals what’s truly in hoard?`,
   };
 
   useEffect(() => {
+    setCurrentRiddle(0);
+  }, []);
+
+  useEffect(() => {
     if (dialogOpen && activePuzzleIndex !== null) {
       // Start a timer that updates every second.
       const id = setInterval(() => {
@@ -267,7 +288,7 @@ Which container reveals what’s truly in hoard?`,
   };
 
   // Callback for when a puzzle is completed
-  const handlePuzzleComplete = (correct) => {
+  const handlePuzzleComplete = (correct, localErrorCount) => {
     if (correct) {
       toast({ title: "Correct!", description: "Task completed successfully" });
       console.log("The time taken for this puzzle is : ", taskTimer);
@@ -275,6 +296,11 @@ Which container reveals what’s truly in hoard?`,
       setTaskTimes((prev) => ({ ...prev, [activePuzzleIndex]: taskTimer }));
       setCompletedPuzzles((prev) => ({ ...prev, [activePuzzleIndex]: true }));
       setScore((prev) => prev + availablePuzzles[currentPuzzle].points);
+      setGlobalErrorCount(localErrorCount);
+      console.log(
+        "The error count from completed puzzle is : ",
+        localErrorCount
+      );
       setCurrentPuzzle((prev) => prev + 1);
       setDialogOpen(false);
       setCurrentRiddle((prev) => prev + 1);
@@ -292,227 +318,245 @@ Which container reveals what’s truly in hoard?`,
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-accent">
-      {!gameStarted ? (
-        <div className="max-w-4xl mx-auto">
-          <Card className="p-8 text-center">
-            <h1 className="text-3xl font-bold mb-4">Ready to Begin?</h1>
-            <p className="text-muted-foreground mb-6">
-              Solve all the challenges.
-            </p>
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold mb-2">
-                Important Instructions:
-              </h2>
-              <br />
-              <br />
-              <ol className="text-left inline-block text-base">
-                <li className="mb-2">
-                  Follow the riddles to understand what to do next.
-                </li>
-                <li className="mb-2">
-                  You can ask Cypher if you need any assistance with the topics.
-                </li>
-                <li className="mb-2">
-                  The more time you take to solve the problem, the fewer points
-                  you score.
-                </li>
-                <li className="mb-2">
-                  Each time you submit with a wrong answer, some points are
-                  deducted.
-                </li>
-                <li className="mb-2">
-                  Viewing the resources for each task will not deduct any
-                  points.
-                </li>
-              </ol>
-            </div>
-            <Button onClick={startGame} size="lg">
-              Start Gaming
-            </Button>
-          </Card>
-        </div>
-      ) : (
-        <div className="relative w-screen h-screen">
-          <Progress
-            value={(currentPuzzle / availablePuzzles.length) * 100}
-            className="fixed h-4"
-          />
-          <Canvas
-            shadows
-            camera={{ position: [0, 2, 12], fov: 50 }}
-            style={{ width: "100%", height: "100%" }}
-          >
-            <ambientLight intensity={0.4} />
-            <pointLight position={[10, 10, 10]} intensity={0.8} castShadow />
-            <Room isBright={isBright} />
-            <Door
-              onClick={handleDoorOpen}
-              position={[10, -0.5, 0]}
-              rotation={[0, -Math.PI / 2, 0]}
-            />
-            <Computer
-              onClick={() => handleObjectClick(1)}
-              position={[0.4, 0.2, -9.95]}
-            />
-            <Clock
-              onClick={() => handleObjectClick(0)}
-              position={[5, 1.5, -5]}
-              rotation={[0, Math.PI / 90, 0]}
-            />
-            <Safe
-              onClick={() => handleObjectClick(2)}
-              position={[8, -1.7, -9.9]}
-            />
-            <LightSwitch
-              onClick={toggleBrightness}
-              isOn={isBright}
-              position={[10, 1, 1]} // adjust position to be beside the door
-              rotation={[0, -Math.PI / 2, 0]}
-            />
-            <Cupboard
-              onClick={() => handleObjectClick(3)}
-              position={[-9, 0, 2]} // Adjust position to attach to a wall or as desired
-              rotation={[0, Math.PI / 2, 0]}
-            />
-            <Flowerpot
-              position={[-6.4, -1, 0]} // Adjust position to attach to a wall or as desired
-              rotation={[0, Math.PI / 2, 0]}
-            />
-            <Flowerpot
-              position={[-6.4, -1, 1]} // Adjust position to attach to a wall or as desired
-              rotation={[0, Math.PI / 2, 0]}
-            />
-            <Flowerpot
-              position={[-6.4, -1, 2]} // Adjust position to attach to a wall or as desired
-              rotation={[0, Math.PI / 2, 0]}
-            />
-            <CoffeeMachine
-              position={[-6.8, 0, 4]} // Adjust position to attach to a wall or as desired
-              rotation={[0, Math.PI / 2, 0]}
-              //onClick={handleScrollClick}
-            />
-            <Oven
-              position={[2.4, -1, -3]} // Adjust position to attach to a wall or as desired
-              rotation={[0, Math.PI / 90, 0]}
-            />
-            <Dustbin
-              position={[-0.8, -1.5, -4.8]} // Adjust position to attach to a wall or as desired
-              rotation={[0, Math.PI / 2, 0]}
-            />
-            <XeroxMachine
-              position={[-6.4, -1.3, -3.3]} // Adjust position to attach to a wall or as desired
-              rotation={[0, Math.PI / 4, 0]}
-            />
-            <Table position={[-2.7, -1, -2.2]} rotation={[0, 0, 0]} />
-            <CeilingFan position={[-1, 2, 0]} />
-          </Canvas>
-          {overlayOpen && (
-            <div
-              className="fixed inset-0 bg-black/80 flex flex-row items-center justify-center z-50"
-              onClick={() => setOverlayOpen(false)} // Close when clicked
-            >
-              <Image
-                src="/anime-cypher-spray-cypher-removebg.png"
-                alt="Secret Info"
-                width={400}
-                height={100}
-                className="rounded-lg"
-              />
-              <div className="flex flex-col items-center justify-center pl-8">
-                <Label className="text-3xl font-bold text-white">
-                  {riddles[currentRiddle].riddle}
-                </Label>
-                <Label className="text-2xl text-white italic pt-3">
-                  {riddles[currentRiddle].hint}
-                </Label>
-                <Label className="text-2xl text-white italic pt-3">
-                  Score : {score}
-                </Label>
-                <Link href="/">
-                  <Button className="mr-5">Home Page</Button>
-                </Link>
-              </div>
-            </div>
-          )}
-          {doorOpen && (
-            <div
-              className="fixed inset-0 bg-black/80 flex flex-row items-center justify-center z-50"
-              onClick={() => setDoorOpen(false)} // Close when clicked
-            >
-              <Image
-                src="/cypher-level-complete.png"
-                alt="Level Completed"
-                width={400}
-                height={100}
-                className="rounded-lg"
-              />
-              <div className="flex flex-col items-center justify-center pl-8">
-                <Label className="text-3xl font-bold text-white">
-                  Congratulations! on clearing this level. You have done well.
-                </Label>
-                <Label className="text-2xl text-white italic pt-3">
-                  Total Points Scored : {score}
-                </Label>
-                <Label className="text-2xl text-white italic pt-3">
-                  Time Taken : {totalTime} seconds
-                </Label>
-                <div className="flex flex-row pt-3">
-                  <Link href="/">
-                    <Button className="mr-5">Home Page</Button>
-                  </Link>
-                  <Link href="/next-level">
-                    <Button>Next Level</Button>
-                  </Link>
+    <AnimatePresence mode="wait">
+      <motion.div
+        key="mysteryroom"
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        variants={pageVariants}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="min-h-screen bg-gradient-to-b from-background to-accent">
+          {!gameStarted ? (
+            <div className="max-w-4xl mx-auto">
+              <Card className="p-8 text-center">
+                <h1 className="text-3xl font-bold mb-4">Ready to Begin?</h1>
+                <p className="text-muted-foreground mb-6">
+                  Solve all the challenges.
+                </p>
+                <div className="mb-6">
+                  <h2 className="text-xl font-semibold mb-2">
+                    Important Instructions:
+                  </h2>
+                  <br />
+                  <br />
+                  <ol className="text-left inline-block text-base">
+                    <li className="mb-2">
+                      Follow the riddles to understand what to do next.
+                    </li>
+                    <li className="mb-2">
+                      You can ask Cypher if you need any assistance with the
+                      topics.
+                    </li>
+                    <li className="mb-2">
+                      The more time you take to solve the problem, the fewer
+                      points you score.
+                    </li>
+                    <li className="mb-2">
+                      Each time you submit with a wrong answer, some points are
+                      deducted.
+                    </li>
+                    <li className="mb-2">
+                      Viewing the resources for each task will not deduct any
+                      points.
+                    </li>
+                  </ol>
                 </div>
-              </div>
+                <Button onClick={startGame} size="lg">
+                  Start Gaming
+                </Button>
+              </Card>
             </div>
-          )}
-
-          {/* Dialog box to render the puzzle */}
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogContent
-              onPointerDownOutside={(e) => e.preventDefault()}
-              className="bg-black/80 p-8 rounded-md max-h-[80vh] overflow-y-auto max-w-[90vh]"
-            >
-              {activePuzzleIndex !== null && (
-                <>
-                  <DialogHeader>
-                    <DialogTitle>
-                      {availablePuzzles[activePuzzleIndex].title}
-                    </DialogTitle>
-                    <DialogDescription>
-                      {availablePuzzles[activePuzzleIndex].description}
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="my-4">
-                    {renderPuzzleComponent(
-                      availablePuzzles[activePuzzleIndex],
-                      handlePuzzleComplete
-                    )}
-                    {/* <p>{taskTimer}</p> */}
+          ) : (
+            <div className="relative w-screen h-screen">
+              <Progress
+                value={(currentPuzzle / availablePuzzles.length) * 100}
+                className="fixed h-4"
+              />
+              <Canvas
+                shadows
+                camera={{ position: [0, 2, 12], fov: 50 }}
+                style={{ width: "100%", height: "100%" }}
+              >
+                <ambientLight intensity={0.4} />
+                <pointLight
+                  position={[10, 10, 10]}
+                  intensity={0.8}
+                  castShadow
+                />
+                <Room isBright={isBright} />
+                <Door
+                  onClick={handleDoorOpen}
+                  position={[10, -0.5, 0]}
+                  rotation={[0, -Math.PI / 2, 0]}
+                />
+                <Computer
+                  onClick={() => handleObjectClick(1)}
+                  position={[0.4, 0.2, -9.95]}
+                />
+                <Clock
+                  onClick={() => handleObjectClick(0)}
+                  position={[5, 1.5, -5]}
+                  rotation={[0, Math.PI / 90, 0]}
+                />
+                <Safe
+                  onClick={() => handleObjectClick(2)}
+                  position={[8, -1.7, -9.9]}
+                />
+                <LightSwitch
+                  onClick={toggleBrightness}
+                  isOn={isBright}
+                  position={[10, 1, 1]} // adjust position to be beside the door
+                  rotation={[0, -Math.PI / 2, 0]}
+                />
+                <Cupboard
+                  onClick={() => handleObjectClick(3)}
+                  position={[-9, 0, 2]} // Adjust position to attach to a wall or as desired
+                  rotation={[0, Math.PI / 2, 0]}
+                />
+                <Flowerpot
+                  position={[-6.4, -1, 0]} // Adjust position to attach to a wall or as desired
+                  rotation={[0, Math.PI / 2, 0]}
+                />
+                <Flowerpot
+                  position={[-6.4, -1, 1]} // Adjust position to attach to a wall or as desired
+                  rotation={[0, Math.PI / 2, 0]}
+                />
+                <Flowerpot
+                  position={[-6.4, -1, 2]} // Adjust position to attach to a wall or as desired
+                  rotation={[0, Math.PI / 2, 0]}
+                />
+                <CoffeeMachine
+                  position={[-6.8, 0, 4]} // Adjust position to attach to a wall or as desired
+                  rotation={[0, Math.PI / 2, 0]}
+                  //onClick={handleScrollClick}
+                />
+                <Oven
+                  position={[2.4, -1, -3]} // Adjust position to attach to a wall or as desired
+                  rotation={[0, Math.PI / 90, 0]}
+                />
+                <Dustbin
+                  position={[-0.8, -1.5, -4.8]} // Adjust position to attach to a wall or as desired
+                  rotation={[0, Math.PI / 2, 0]}
+                />
+                <XeroxMachine
+                  position={[-6.4, -1.3, -3.3]} // Adjust position to attach to a wall or as desired
+                  rotation={[0, Math.PI / 4, 0]}
+                />
+                <Table position={[-2.7, -1, -2.2]} rotation={[0, 0, 0]} />
+                <CeilingFan position={[-1, 2, 0]} />
+              </Canvas>
+              {overlayOpen && (
+                <div
+                  className="fixed inset-0 bg-black/80 flex flex-row items-center justify-center z-50"
+                  onClick={() => setOverlayOpen(false)} // Close when clicked
+                >
+                  <Image
+                    src="/anime-cypher-spray-cypher-removebg.png"
+                    alt="Secret Info"
+                    width={400}
+                    height={100}
+                    className="rounded-lg"
+                  />
+                  <div className="flex flex-col items-center justify-center pl-8">
+                    <Label className="text-3xl font-bold text-white">
+                      {riddles[currentRiddle].riddle}
+                    </Label>
+                    <Label className="text-2xl text-white italic pt-3">
+                      {riddles[currentRiddle].hint}
+                    </Label>
+                    <Label className="text-2xl text-white italic pt-3">
+                      Score : {score}
+                    </Label>
+                    <Link href="/">
+                      <Button className="mr-5">Home Page</Button>
+                    </Link>
                   </div>
-                  {/* <DialogFooter>
+                </div>
+              )}
+              {doorOpen && (
+                <div
+                  className="fixed inset-0 bg-black/80 flex flex-row items-center justify-center z-50"
+                  onClick={() => setDoorOpen(false)} // Close when clicked
+                >
+                  <Image
+                    src="/cypher-level-complete.png"
+                    alt="Level Completed"
+                    width={400}
+                    height={100}
+                    className="rounded-lg"
+                  />
+                  <div className="flex flex-col items-center justify-center pl-8">
+                    <Label className="text-3xl font-bold text-white">
+                      Congratulations! on clearing this level. You have done
+                      well.
+                    </Label>
+                    <Label className="text-2xl text-white italic pt-3">
+                      Total Points Scored : {score}
+                    </Label>
+                    <Label className="text-2xl text-white italic pt-3">
+                      Time Taken : {totalTime} seconds
+                    </Label>
+                    <div className="flex flex-row pt-3">
+                      <Link href="/">
+                        <Button className="mr-5">Home Page</Button>
+                      </Link>
+                      <Button onClick={() => handleNextLevel()}>
+                        Next Level
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Dialog box to render the puzzle */}
+              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogContent
+                  onPointerDownOutside={(e) => e.preventDefault()}
+                  className="bg-black/80 p-8 rounded-md max-h-[80vh] overflow-y-auto max-w-[90vh]"
+                >
+                  {activePuzzleIndex !== null && (
+                    <>
+                      <DialogHeader>
+                        <DialogTitle>
+                          {availablePuzzles[activePuzzleIndex].title}
+                        </DialogTitle>
+                        <DialogDescription>
+                          {availablePuzzles[activePuzzleIndex].description}
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="my-4">
+                        {renderPuzzleComponent(
+                          availablePuzzles[activePuzzleIndex],
+                          globalErrorCount,
+                          handlePuzzleComplete
+                        )}
+                        {/* <p>{taskTimer}</p> */}
+                      </div>
+                      {/* <DialogFooter>
                     <Button onClick={() => handlePuzzleComplete(false)}>
                       Complete
                     </Button>
                   </DialogFooter> */}
-                </>
-              )}
-            </DialogContent>
-          </Dialog>
-        </div>
-      )}
-      <Chat></Chat>
+                    </>
+                  )}
+                </DialogContent>
+              </Dialog>
+            </div>
+          )}
+          <Chat></Chat>
 
-      <div className="fixed bottom-4 left-4 z-50">
-        <button
-          onClick={handleHint}
-          className="fixed bottom-4 left-4 bg-blue-500 text-white text-2xl w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-600 transition"
-        >
-          ?
-        </button>
-      </div>
-    </div>
+          <div className="fixed bottom-4 left-4 z-50">
+            <button
+              onClick={handleHint}
+              className="fixed bottom-4 left-4 bg-blue-500 text-white text-2xl w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-600 transition"
+            >
+              ?
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    </AnimatePresence>
   );
 }

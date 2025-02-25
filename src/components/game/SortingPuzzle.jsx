@@ -1,17 +1,18 @@
 "use client";
-
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Shield, ShieldAlert } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
-export function SortingPuzzle({ data, onComplete }) {
+export function SortingPuzzle({ data, onComplete = () => {} }) {
   const [categorizedItems, setCategorizedItems] = useState({
     sensitive: [],
     "non-sensitive": [],
   });
-
   const [remainingItems, setRemainingItems] = useState(data.items);
+  const [localErrorCount, setLocalErrorCount] = useState(0);
+  const { toast } = useToast();
 
   const handleDragStart = (e, id) => {
     e.dataTransfer.setData("text/plain", id);
@@ -21,7 +22,6 @@ export function SortingPuzzle({ data, onComplete }) {
     e.preventDefault();
     const id = e.dataTransfer.getData("text/plain");
     const item = remainingItems.find((item) => item.id === id);
-    console.log("The items in the categroized items are : ", categorizedItems);
 
     if (item) {
       setCategorizedItems((prev) => ({
@@ -49,7 +49,14 @@ export function SortingPuzzle({ data, onComplete }) {
       const category = item.category;
       return categorizedItems[category]?.includes(item.text);
     });
-    onComplete(isCorrect);
+    if (!isCorrect) {
+      // Increase local error count and show a toast
+      setLocalErrorCount((prev) => prev + 1);
+      toast({ title: "Incorrect classification" });
+    } else {
+      // When correct, send the local error count to the parent.
+      onComplete(isCorrect, localErrorCount);
+    }
   };
 
   return (
