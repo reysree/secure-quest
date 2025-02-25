@@ -26,7 +26,12 @@ export default function LightSwitch({ onClick, isOn, ...props }) {
       {/* Button indicator: a circle placed on the front face of the cylinder */}
       <mesh position={[0, 0, 0.16]}>
         <circleGeometry args={[0.08, 32]} />
-        <meshStandardMaterial color={isOn ? "green" : "red"} />
+        <meshStandardMaterial
+          color={isOn ? "green" : "#fc0303"}
+          emissive={isOn ? "#00ff00" : "#ff0000"}
+          emissiveIntensity={0.5}
+          toneMapped={false}
+        />
       </mesh>
     </group>
   );
