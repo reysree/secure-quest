@@ -52,8 +52,6 @@ export async function POST(req) {
   try {
     const { errorCount, answersArray } = await req.json();
     // Replace our placeholders in the system prompt with actual values.
-    //console.log("The error count is : ", errorCount);
-    //console.log("The array passed as input is : ", answersArray);
     const prompt = systemprompt
       .replace("{errorCount}", errorCount)
       .replace("{answersArray}", JSON.stringify(answersArray));
@@ -64,12 +62,12 @@ export async function POST(req) {
     });
 
     const text = response.choices?.[0]?.message?.content || "";
+    //Format the response to be a valid JSON
     const cleanedText = text
       .trim()
       .replace(/^```json\s*/, "")
       .replace(/```$/, "");
     const responseData = JSON.parse(cleanedText);
-    //console.log("The data returned by openai is : ", responseData);
     return NextResponse.json(responseData);
   } catch (error) {
     console.error("Error processing request:", error);

@@ -3,7 +3,6 @@ import OPENAI from "openai";
 import { PineconeStore } from "@langchain/pinecone";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { Pinecone } from "@pinecone-database/pinecone";
-//import { TextLoader } from "langchain/document_loaders/fs/text";
 
 const systemprompt = `Your name is Cypher. You are an AI assistant and teacher specialized in data privacy and data security. Your role is to help users understand and learn key compliance concepts, definitions, and best practices regarding data privacy and data security. Use the following guidelines:
 
@@ -30,7 +29,6 @@ const PINECONE_API_KEY = process.env.PINECONE_API_KEY;
 const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME;
 
 let vectorStore;
-//let fullDocument;
 
 async function getVectorStore() {
   if (vectorStore) return vectorStore;
@@ -76,31 +74,9 @@ export async function POST(req) {
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [{ role: "system", content: systemprompt }, ...body.messages],
-      //stream: true,
     });
-    // const stream = new ReadableStream({
-    //   async start(controller) {
-    //     const encoder = new TextEncoder();
-    //     try {
-    //       for await (const chunk of response) {
-    //         const content = chunk.choices[0]?.delta?.content;
-    //         if (content) {
-    //           const text = encoder.encode(content);
-    //           controller.enqueue(text);
-    //         }
-    //       }
-    //     } catch (err) {
-    //       console.error("Error in stream processing:", err);
-    //       controller.error(err);
-    //     } finally {
-    //       console.log("Stream completed.");
-    //       controller.close();
-    //     }
-    //   },
-    // });
     const aiMessage =
       response.choices?.[0]?.message?.content || "No response available";
-    //console.log("OpenAI Response:", aiMessage);
 
     return NextResponse.json({
       role: "assistant",
