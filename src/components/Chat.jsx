@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
+import ReactMarkdown from "react-markdown";
 
 const Chat = () => {
   const initial_message =
@@ -65,9 +66,9 @@ const Chat = () => {
       </motion.div>
       <motion.div
         className="fixed bottom-0 right-0 bg-white mr-2 w-[25%] h-[50%] shadow-lg rounded-t-lg flex flex-col justify-between"
-        initial={{ y: "100%" }} // Starts completely off-screen
-        animate={{ y: chatOpen ? 0 : "100%" }} // Slides into view or back down
-        transition={{ duration: 1 }} // Smooth animation
+        initial={{ y: "100%" }}
+        animate={{ y: chatOpen ? 0 : "100%" }}
+        transition={{ duration: 1 }}
       >
         <div className="flex justify-between items-center border-b-2">
           <h2 className="text-lg pl-4 font-bold">Chat</h2>
@@ -85,7 +86,7 @@ const Chat = () => {
                 key={index}
                 className="bg-gray-200 text-black p-2 mb-2 rounded shadow-sm"
               >
-                {msg.content}
+                <ReactMarkdown>{msg.content}</ReactMarkdown>
               </div>
             ) : (
               <div
