@@ -314,7 +314,7 @@ Which container reveals what’s truly in hoard?`,
               <Canvas
                 shadows
                 camera={{ position: [0, 2, 12], fov: 50 }}
-                style={{ width: "100%", height: "100%" }}
+                className="absolute inset-0"
               >
                 <ambientLight intensity={0.4} />
                 <pointLight
@@ -344,7 +344,7 @@ Which container reveals what’s truly in hoard?`,
                 <LightSwitch
                   onClick={toggleBrightness}
                   isOn={isBright}
-                  position={[10, 1, 1]}
+                  position={[10, 1, -0.5]}
                   rotation={[0, -Math.PI / 2, 0]}
                 />
                 <Cupboard
@@ -365,7 +365,7 @@ Which container reveals what’s truly in hoard?`,
                   rotation={[0, Math.PI / 2, 0]}
                 />
                 <CoffeeMachine
-                  position={[-6.8, 0, 4]}
+                  position={[-6.8, 0, 3.5]}
                   rotation={[0, Math.PI / 2, 0]}
                 />
                 <Oven
