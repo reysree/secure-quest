@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -75,7 +76,7 @@ export default function MysteryRoom({ difficulty }) {
   const [activePuzzleIndex, setActivePuzzleIndex] = useState(null);
   // State to control dialog visibility
   const [dialogOpen, setDialogOpen] = useState(false);
-  // Track completed puzzles by index (so the object won’t reopen its dialog)
+  // Track completed puzzles by index (so the object won't reopen its dialog)
   const [completedPuzzles, setCompletedPuzzles] = useState({});
 
   const [overlayOpen, setOverlayOpen] = useState(false);
@@ -91,6 +92,7 @@ export default function MysteryRoom({ difficulty }) {
   const [totalTime, setTotalTime] = useState(0);
   const [isExiting, setIsExiting] = useState(false);
   const [globalErrorCount, setGlobalErrorCount] = useState(0);
+  const [showExitDialog, setShowExitDialog] = useState(false);
   const pageVariants = {
     visible: { opacity: 1 },
     hidden: { opacity: 0 },
@@ -102,7 +104,7 @@ Press the red switch, let brightness guide.`,
       hint: "Press the red switch to turn on the light and unlock the tasks.",
     },
     {
-      riddle: `I’m ever-ticking, yet I never flee,
+      riddle: `I'm ever-ticking, yet I never flee,
 My hands sweep silently for all to see.
 I mark each moment with endless grace—
 What device measures time in its place?`,
@@ -110,7 +112,7 @@ What device measures time in its place?`,
     },
     {
       riddle: `Within my circuits, vast knowledge is stored,
-Keys unlock secrets, though I’m not adored.
+Keys unlock secrets, though I'm not adored.
 I process data in a digital flight—
 Which device brings wisdom to light?`,
       hint: "Seek the object that resembles a modern scribe",
@@ -120,13 +122,13 @@ Which device brings wisdom to light?`,
 But within my humble frame, secrets and treasures dwell.
 Unlock my quiet exterior to reveal what I guard—
 What am I?`,
-      hint: "Don’t be fooled by my plain appearance; sometimes the safest vaults come in the most unassuming forms.",
+      hint: "Don't be fooled by my plain appearance; sometimes the safest vaults come in the most unassuming forms.",
     },
     {
       riddle: `Behind wooden doors, mysteries wait in a row,
 Shelves hide the clues that you need to know.
 Open me carefully, the answers are stored—
-Which container reveals what’s truly in hoard?`,
+Which container reveals what's truly in hoard?`,
       hint: "Look for the storage that conceals hidden insights.",
     },
     {
@@ -252,6 +254,33 @@ Which container reveals what’s truly in hoard?`,
       });
       // The timer continues if incorrect.
     }
+  };
+
+  useEffect(() => {
+    // Push the current state first
+    window.history.pushState(null, null, window.location.pathname);
+
+    // Handle browser back button
+    const handlePopState = () => {
+      setShowExitDialog(true);
+      // Push state again to prevent immediate navigation
+      window.history.pushState(null, null, window.location.pathname);
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
+
+  const handleGoBack = () => {
+    setShowExitDialog(false);
+    router.push("/difficulty");
+  };
+
+  const handleResume = () => {
+    setShowExitDialog(false);
   };
 
   return (
@@ -488,6 +517,25 @@ Which container reveals what’s truly in hoard?`,
           )}
         </div>
       </motion.div>
+      <Dialog open={showExitDialog} onOpenChange={setShowExitDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Are you sure you want to leave?</DialogTitle>
+            <DialogDescription>
+              Going back will end your current game session. All progress and
+              points will be lost.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex gap-2">
+            <Button variant="destructive" onClick={handleGoBack}>
+              Go Back
+            </Button>
+            <Button variant="default" onClick={handleResume}>
+              Resume Game
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </AnimatePresence>
   );
 }
