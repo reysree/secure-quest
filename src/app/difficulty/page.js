@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Shield, ShieldAlert, ShieldOff } from "lucide-react";
+import { Shield, ShieldAlert, ShieldOff, ArrowLeft } from "lucide-react";
 import { auth } from "@/firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 
@@ -76,6 +76,11 @@ export default function DifficultySelection() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-accent p-8">
+      <Button variant="ghost" className="mb-6" onClick={() => router.push("/")}>
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        Back to Home
+      </Button>
+
       <div className="max-w-6xl mx-auto">
         <h1 className="text-4xl font-bold text-center mb-12">
           Choose Your Challenge Level
@@ -92,7 +97,7 @@ export default function DifficultySelection() {
                     ? "ring-2 ring-primary"
                     : ""
                 }`}
-                onClick={() => handleDifficultySelect("easy")} //Hardcoded easy for prototype.
+                onClick={() => handleDifficultySelect(difficulty.level)}
               >
                 <div className="text-center mb-4">
                   <Icon className="w-12 h-12 mx-auto mb-2 text-primary" />
