@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Shield, Brain, Trophy } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
+import ScoreBoard from "@/components/ScoreBoard";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,14 +21,17 @@ export default function Home() {
   const user = useSelector((state) => state.user.user);
   const router = useRouter();
   const [userInitials, setUserInitials] = useState("");
+  const [userfirstname, setUserfirstname] = useState("");
+  const [userlastname, setUserlastname] = useState("");
   const [profile, setProfile] = useState(false);
+  const [showScoreboard, setShowScoreboard] = useState(false);
   console.log("the user details are : ", user);
 
   useEffect(() => {
-    if (user?.firstName && user?.lastName) {
+    if (user != null) {
       setProfile(true);
-      const initials = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`;
-      setUserInitials(initials);
+      setUserfirstname(user.firstName.substring(0, 1));
+      setUserlastname(user.lastName.substring(0, 1));
     }
   }, [user]);
 
@@ -35,14 +39,23 @@ export default function Home() {
     router.push("/logout");
   };
 
+  const handleScoreBoard = () => {
+    setShowScoreboard(!showScoreboard);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-accent">
       <nav className="flex flex-row justify-end p-3 pr-7">
-        <Button className="mr-3">ScoreBoard</Button>
+        <Button className="mr-3" onClick={() => handleScoreBoard()}>
+          ScoreBoard
+        </Button>
         {profile ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button>{userInitials}</Button>
+              <Button>
+                {userfirstname}
+                {userlastname}
+              </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
               <DropdownMenuLabel>Account Details</DropdownMenuLabel>
@@ -118,6 +131,11 @@ export default function Home() {
           </div>
         </div>
       </main>
+      {showScoreboard && (
+        <div className="mt-8 w-full">
+          <ScoreBoard />
+        </div>
+      )}
     </div>
   );
 }
