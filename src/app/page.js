@@ -19,16 +19,15 @@ import { useState, useEffect } from "react";
 export default function Home() {
   const user = useSelector((state) => state.user.user);
   const router = useRouter();
-  const [userfirstname, setUserfirstname] = useState("");
-  const [userlastname, setUserlastname] = useState("");
+  const [userInitials, setUserInitials] = useState("");
   const [profile, setProfile] = useState(false);
   console.log("the user details are : ", user);
 
   useEffect(() => {
-    if (user != null) {
+    if (user?.firstName && user?.lastName) {
       setProfile(true);
-      setUserfirstname(user.firstName.substring(0, 1));
-      setUserlastname(user.lastName.substring(0, 1));
+      const initials = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`;
+      setUserInitials(initials);
     }
   }, [user]);
 
@@ -43,7 +42,7 @@ export default function Home() {
         {profile ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button>{userfirstname + userlastname}</Button>
+              <Button>{userInitials}</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
               <DropdownMenuLabel>Account Details</DropdownMenuLabel>

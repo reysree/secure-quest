@@ -92,7 +92,7 @@ export default function DifficultySelection() {
                     ? "ring-2 ring-primary"
                     : ""
                 }`}
-                onClick={() => handleDifficultySelect(difficulty.level)}
+                onClick={() => handleDifficultySelect("easy")} //Hardcoded easy for prototype.
               >
                 <div className="text-center mb-4">
                   <Icon className="w-12 h-12 mx-auto mb-2 text-primary" />

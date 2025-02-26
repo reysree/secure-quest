@@ -4,23 +4,44 @@ import { signUp } from "@/firebase/auth";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/redux/userSlice";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
   const [firstname, setFirstName] = useState("");
   const [lastname, setLastName] = useState("");
+  const [message, setMessage] = useState("");
   const router = useRouter();
+  const dispatch = useDispatch();
+  const { toast } = useToast();
 
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
-      await signUp(email, password, firstname, lastname);
-      setMessage("Signup successful!");
-      router.push("/"); // Redirect after signup
+      // Sign up and get user data
+      const userData = await signUp(email, password, firstname, lastname);
+
+      // Set user in Redux store
+      dispatch(setUser(userData));
+
+      // Show success message
+      toast({
+        title: "Account created successfully!",
+        description: "Welcome to SecureQuest",
+      });
+
+      // Redirect to home page
+      router.push("/");
     } catch (error) {
       setMessage(error.message);
+      toast({
+        title: "Signup Failed",
+        description: error.message,
+        variant: "destructive",
+      });
     }
   };
 
